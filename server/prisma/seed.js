@@ -41,6 +41,7 @@ async function main() {
   console.log('✓ Medicines seeded:', paracetamol.name, amoxicillin.name, metformin.name);
 
   // ─── Pharmacies ────────────────────────────────────────────────────────────
+  // 6 pharmacies across 5 areas — keeps area filter meaningfully testable
   const pharmacyA = await prisma.pharmacy.upsert({
     where: { id: 1 },
     update: {},
@@ -65,7 +66,59 @@ async function main() {
     },
   });
 
-  console.log('✓ Pharmacies seeded:', pharmacyA.name, pharmacyB.name);
+  const pharmacyC = await prisma.pharmacy.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Galle Fort Pharmacy',
+      address: '23 Church Street, Galle Fort, Galle',
+      area: 'Galle',
+      contact: '+94 91 222 4455',
+      hours: 'Mon–Sat 8am–8pm',
+    },
+  });
+
+  const pharmacyD = await prisma.pharmacy.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      name: 'Matara Medical Stores',
+      address: '78 Main Street, Matara',
+      area: 'Matara',
+      contact: '+94 41 222 7788',
+      hours: 'Mon–Fri 8am–7pm, Sat 9am–5pm',
+    },
+  });
+
+  const pharmacyE = await prisma.pharmacy.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Negombo City Pharmacy',
+      address: '12 Colombo Road, Negombo',
+      area: 'Negombo',
+      contact: '+94 31 222 1122',
+      hours: 'Mon–Sun 8am–9pm',
+    },
+  });
+
+  const pharmacyF = await prisma.pharmacy.upsert({
+    where: { id: 6 },
+    update: {},
+    create: {
+      name: 'Jaffna Osu Sala',
+      address: '5 Hospital Road, Jaffna',
+      area: 'Jaffna',
+      contact: '+94 21 222 5566',
+      hours: 'Mon–Sat 7:30am–8pm',
+    },
+  });
+
+  console.log(
+    '✓ Pharmacies seeded:',
+    pharmacyA.name, pharmacyB.name, pharmacyC.name,
+    pharmacyD.name, pharmacyE.name, pharmacyF.name,
+  );
 
   // ─── Stock ─────────────────────────────────────────────────────────────────
   await prisma.stock.upsert({

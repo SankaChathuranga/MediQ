@@ -38,7 +38,38 @@ async function main() {
     },
   });
 
-  console.log('✓ Medicines seeded:', paracetamol.name, amoxicillin.name, metformin.name);
+  console.log('✓ Medicines seeded (existing):', paracetamol.name, amoxicillin.name, metformin.name);
+
+  // ─── Additional medicines — Member 1 (Medicine Catalog module) ─────────────
+  // Categories use the lowercase/kebab enum the Zod schema enforces:
+  //   antibiotic | painkiller | chronic-care | antihistamine | other
+  // IDs 4–19 reserved for this module.
+
+  const newMedicines = await Promise.all([
+    // Antibiotics
+    prisma.medicine.upsert({ where: { id: 4 }, update: {}, create: { name: 'Augmentin',        generic_name: 'Amoxicillin-Clavulanate',  category: 'antibiotic',    description: 'Broad-spectrum antibiotic combining amoxicillin with clavulanate; treats resistant infections.' } }),
+    prisma.medicine.upsert({ where: { id: 5 }, update: {}, create: { name: 'Zithromax',        generic_name: 'Azithromycin',            category: 'antibiotic',    description: 'Macrolide antibiotic for respiratory and skin infections. 3–5 day course.' } }),
+    prisma.medicine.upsert({ where: { id: 6 }, update: {}, create: { name: 'Flagyl',           generic_name: 'Metronidazole',           category: 'antibiotic',    description: 'Treats anaerobic bacterial and protozoal infections; common for GI and dental infections.' } }),
+    prisma.medicine.upsert({ where: { id: 7 }, update: {}, create: { name: 'Ciprobay',         generic_name: 'Ciprofloxacin',           category: 'antibiotic',    description: 'Fluoroquinolone antibiotic for urinary tract and systemic infections.' } }),
+    // Painkillers
+    prisma.medicine.upsert({ where: { id: 8 }, update: {}, create: { name: 'Brufen',           generic_name: 'Ibuprofen',               category: 'painkiller',    description: 'NSAID for pain, fever, and inflammation. Take with food to protect gastric lining.' } }),
+    prisma.medicine.upsert({ where: { id: 9 }, update: {}, create: { name: 'Voltaren',         generic_name: 'Diclofenac',              category: 'painkiller',    description: 'NSAID commonly used for musculoskeletal pain and arthritis.' } }),
+    prisma.medicine.upsert({ where: { id: 10 }, update: {}, create: { name: 'Tramacet',        generic_name: 'Tramadol + Paracetamol',  category: 'painkiller',    description: 'Moderate-to-severe pain relief combining an opioid analgesic with paracetamol.' } }),
+    // Chronic care
+    prisma.medicine.upsert({ where: { id: 11 }, update: {}, create: { name: 'Insulin Actrapid', generic_name: 'Human Insulin (Regular)', category: 'chronic-care', description: 'Short-acting insulin for type 1 and type 2 diabetes; requires refrigeration.' } }),
+    prisma.medicine.upsert({ where: { id: 12 }, update: {}, create: { name: 'Cardace',          generic_name: 'Ramipril',               category: 'chronic-care', description: 'ACE inhibitor for hypertension and heart failure management.' } }),
+    prisma.medicine.upsert({ where: { id: 13 }, update: {}, create: { name: 'Atorva',           generic_name: 'Atorvastatin',           category: 'chronic-care', description: 'Statin for lowering LDL cholesterol and reducing cardiovascular risk.' } }),
+    prisma.medicine.upsert({ where: { id: 14 }, update: {}, create: { name: 'Tenormin',         generic_name: 'Atenolol',               category: 'chronic-care', description: 'Beta-blocker for high blood pressure and angina.' } }),
+    prisma.medicine.upsert({ where: { id: 15 }, update: {}, create: { name: 'Omepral',          generic_name: 'Omeprazole',             category: 'chronic-care', description: 'Proton pump inhibitor for GERD, peptic ulcers, and acid reflux.' } }),
+    // Antihistamines
+    prisma.medicine.upsert({ where: { id: 16 }, update: {}, create: { name: 'Cetirizine-AL',   generic_name: 'Cetirizine',              category: 'antihistamine', description: 'Non-drowsy antihistamine for allergic rhinitis, urticaria, and hay fever.' } }),
+    prisma.medicine.upsert({ where: { id: 17 }, update: {}, create: { name: 'Polaramine',       generic_name: 'Chlorpheniramine',        category: 'antihistamine', description: 'First-generation antihistamine; effective for colds and allergic reactions.' } }),
+    prisma.medicine.upsert({ where: { id: 18 }, update: {}, create: { name: 'Aerius',           generic_name: 'Desloratadine',           category: 'antihistamine', description: 'Long-acting antihistamine; once-daily for seasonal and perennial allergies.' } }),
+    // Other
+    prisma.medicine.upsert({ where: { id: 19 }, update: {}, create: { name: 'Vitamin D3 Forte', generic_name: 'Cholecalciferol',        category: 'other',         description: 'Vitamin D3 supplement for deficiency; important for bone health and immunity.' } }),
+  ]);
+
+  console.log('✓ Additional medicines seeded:', newMedicines.map((m) => m.name).join(', '));
 
   // ─── Pharmacies ────────────────────────────────────────────────────────────
   // 6 pharmacies across 5 areas — keeps area filter meaningfully testable
@@ -145,83 +176,12 @@ async function main() {
 
   console.log('✓ Stock seeded');
 
-  // ─── Patient Requests (Member 4) ───────────────────────────────────────────
-  await prisma.request.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      patient_contact: '+94 77 123 4567',
-      medicine_id: paracetamol.id,
-      area: 'Colombo',
-      urgency: 'high',
-      status: 'fulfilled',
-    },
-  });
-
-  await prisma.request.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      patient_contact: '+94 71 987 6543',
-      medicine_id: amoxicillin.id,
-      area: 'Kandy',
-      urgency: 'medium',
-      status: 'fulfilled',
-    },
-  });
-
-  await prisma.request.upsert({
-    where: { id: 3 },
-    update: {},
-    create: {
-      patient_contact: 'nimal.silva@gmail.com',
-      medicine_id: metformin.id,
-      area: 'Colombo',
-      urgency: 'low',
-      status: 'open',
-    },
-  });
-
-  await prisma.request.upsert({
-    where: { id: 4 },
-    update: {},
-    create: {
-      patient_contact: '+94 76 555 0011',
-      medicine_id: paracetamol.id,
-      area: 'Kandy',
-      urgency: 'medium',
-      status: 'open',
-    },
-  });
-
-  await prisma.request.upsert({
-    where: { id: 5 },
-    update: {},
-    create: {
-      patient_contact: '+94 70 444 8822',
-      medicine_id: amoxicillin.id,
-      area: 'Colombo',
-      urgency: 'high',
-      status: 'open',
-    },
-  });
-
-  await prisma.request.upsert({
-    where: { id: 6 },
-    update: {},
-    create: {
-      patient_contact: 'kumari.perera@yahoo.com',
-      medicine_id: metformin.id,
-      area: 'Kandy',
-      urgency: 'low',
-      status: 'open',
-    },
-  });
-
-  console.log('✓ Patient requests seeded (6 records)');
+  // ─── ADD MORE SEED DATA HERE ────────────────────────────────────────────────
+  // Each module owner should expand this section with realistic sample data
+  // for their entity before their first demo. Keep medicine/pharmacy IDs in sync
+  // with your own inserts above.
   // ──────────────────────────────────────────────────────────────────────────
 
-  console.log(`✓ Additional stock rows seeded: ${additionalStock.length} entries`);
   console.log('Seeding complete!');
 }
 

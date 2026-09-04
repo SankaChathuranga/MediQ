@@ -168,6 +168,7 @@ async function main() {
   console.log('✓ Patient requests seeded (6 records)');
   // ──────────────────────────────────────────────────────────────────────────
 
+  console.log(`✓ Additional stock rows seeded: ${additionalStock.length} entries`);
   console.log('Seeding complete!');
 }
 

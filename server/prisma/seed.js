@@ -145,12 +145,83 @@ async function main() {
 
   console.log('✓ Stock seeded');
 
-  // ─── ADD MORE SEED DATA HERE ────────────────────────────────────────────────
-  // Each module owner should expand this section with realistic sample data
-  // for their entity before their first demo. Keep medicine/pharmacy IDs in sync
-  // with your own inserts above.
+  // ─── Patient Requests (Member 4) ───────────────────────────────────────────
+  await prisma.request.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      patient_contact: '+94 77 123 4567',
+      medicine_id: paracetamol.id,
+      area: 'Colombo',
+      urgency: 'high',
+      status: 'fulfilled',
+    },
+  });
+
+  await prisma.request.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      patient_contact: '+94 71 987 6543',
+      medicine_id: amoxicillin.id,
+      area: 'Kandy',
+      urgency: 'medium',
+      status: 'fulfilled',
+    },
+  });
+
+  await prisma.request.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      patient_contact: 'nimal.silva@gmail.com',
+      medicine_id: metformin.id,
+      area: 'Colombo',
+      urgency: 'low',
+      status: 'open',
+    },
+  });
+
+  await prisma.request.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      patient_contact: '+94 76 555 0011',
+      medicine_id: paracetamol.id,
+      area: 'Kandy',
+      urgency: 'medium',
+      status: 'open',
+    },
+  });
+
+  await prisma.request.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      patient_contact: '+94 70 444 8822',
+      medicine_id: amoxicillin.id,
+      area: 'Colombo',
+      urgency: 'high',
+      status: 'open',
+    },
+  });
+
+  await prisma.request.upsert({
+    where: { id: 6 },
+    update: {},
+    create: {
+      patient_contact: 'kumari.perera@yahoo.com',
+      medicine_id: metformin.id,
+      area: 'Kandy',
+      urgency: 'low',
+      status: 'open',
+    },
+  });
+
+  console.log('✓ Patient requests seeded (6 records)');
   // ──────────────────────────────────────────────────────────────────────────
 
+  console.log(`✓ Additional stock rows seeded: ${additionalStock.length} entries`);
   console.log('Seeding complete!');
 }
 

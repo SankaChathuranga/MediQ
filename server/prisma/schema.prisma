@@ -1,0 +1,53 @@
+// This is your Prisma schema file.
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Medicine {
+  id           Int       @id @default(autoincrement())
+  name         String
+  generic_name String
+  category     String
+  description  String?
+  stock        Stock[]
+  requests     Request[]
+}
+
+model Pharmacy {
+  id      Int     @id @default(autoincrement())
+  name    String
+  address String
+  area    String
+  contact String
+  hours   String
+  stock   Stock[]
+}
+
+model Stock {
+  id           Int      @id @default(autoincrement())
+  pharmacy_id  Int
+  medicine_id  Int
+  quantity     Int
+  price        Float
+  last_updated DateTime @updatedAt
+  pharmacy     Pharmacy @relation(fields: [pharmacy_id], references: [id])
+  medicine     Medicine @relation(fields: [medicine_id], references: [id])
+}
+
+model Request {
+  id              Int      @id @default(autoincrement())
+  patient_contact String
+  medicine_id     Int
+  area            String
+  urgency         String
+  status          String   @default("open")
+  created_at      DateTime @default(now())
+  medicine        Medicine @relation(fields: [medicine_id], references: [id])
+}
